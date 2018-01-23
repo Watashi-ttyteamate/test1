@@ -11,21 +11,26 @@ public class Move : MonoBehaviour {
 	private float pitch;
 	private float yaw;
 	private float roll;
-	private int capacity;
-	public int startCapacity = 1000;
+	[SerializeField]public static float capacity;
+	[SerializeField]public static float speedValue;
+	public static float startCapacity = 1000f;
+	private Vector3 speed;
 	[SerializeField]float YawSensitivity = 1;
 	[SerializeField]float RollSensitivity = 1;
 	[SerializeField]float PitchSensitivity = 1;
 	[SerializeField]float StrafeSensitivity = 1;
 	[SerializeField]float ThrustMod;
-	[SerializeField]float boostStrength;
+	[SerializeField]float boostMod;
+	public Text speedText;
+	public Text boostText;
+	public static Rigidbody rb;
 
-	public Rigidbody rb;
 
 	void Start () 
 	{
 		rb = GetComponent<Rigidbody>();
 		capacity = startCapacity;
+		SetUIText ();
 	}
 
 	void FixedUpdate ()
@@ -39,22 +44,37 @@ public class Move : MonoBehaviour {
 
 		boost = Input.GetAxis ("Boost");
 
-		if (capacity >= 1000)
-		{
-			if (boost == 1) 
-			{
-				rb.AddForce(transform.forward * boostStrength);
-				capacity = capacity - 1000;
-			}
-		}
 
 		thrust = Input.GetAxis ("Thrust");
-		rb.AddForce(transform.forward * thrust * ThrustMod);
+		speed = transform.forward * thrust * ThrustMod;
+		rb.velocity = speed;
+
+		if (Input.GetAxis ("Boost") > 0 && capacity > 0) 
+		{
+			speed = speed * boostMod * Input.GetAxis("Boost");
+			capacity = capacity - (5 * Input.GetAxis ("Boost"));
+		}
 
 		if (capacity <= 1000) 
 		{
 			Debug.Log (capacity);
+			Debug.Log (rb.velocity);
 			capacity = capacity + 2;
 		}
+
 	}
+
+	void LateUpdate()
+	{
+		SetUIText ();
+	}
+
+	void SetUIText()
+	{
+		speedValue = Mathf.Pow(Mathf.Pow(rb.velocity.x,2F) + Mathf.Pow(rb.velocity.y,2F) + Mathf.Pow(rb.velocity.z,2F),.5F);
+		speedText.text = "Speed: " + speedValue.ToString();
+		boostText.text = "Boost: " + capacity.ToString();
+	}
+
+
 }
