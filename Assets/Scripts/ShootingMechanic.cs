@@ -7,12 +7,13 @@ public class ShootingMechanic : MonoBehaviour {
 	public Transform Player;
 	public Transform bulletPosition;
 	public GameObject Bullet;
+	public Transform objectpos;
 	private float bulletSpeed = 3000f;
 	private float fire;
 	private float fireBuffer = 0;
 	public float fireRate = 0.3f;
 
-	// Use this for initialization
+	// Use this for initialization	
 	void Start () {
 
 	}
@@ -33,7 +34,7 @@ public class ShootingMechanic : MonoBehaviour {
 
 				Rigidbody bulletRigid = bulletclone.GetComponent<Rigidbody> ();
 
-				bulletRigid.AddRelativeForce (bulletPosition.transform.forward * bulletSpeed);
+				bulletRigid.AddForce (objectpos.transform.forward * bulletSpeed);
 
 				Destroy (bulletclone, 5f); //Destroys Warning Clone
 
