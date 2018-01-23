@@ -12,16 +12,31 @@ public class ShootingMechanic : MonoBehaviour {
 	private float fire;
 	private float fireBuffer = 0;
 	public float fireRate = 0.3f;
+	public GameObject Player1Controller;
+
+	private string fireType;
 
 	// Use this for initialization	
-	void Start () {
+	void Start () 
+	{
+		Controller controllerscript = Player1Controller.GetComponent<Controller> ();
+		Debug.Log ("ShootingMechanic Player 1 Controller Type " + controllerscript.Player1ControllerType);
+
+		if (controllerscript.Player1ControllerType == 0) 
+		{
+			fireType = "Fire";
+		} 
+		else if (controllerscript.Player1ControllerType == 1) 
+		{
+			fireType = "Fire1";
+		}
 
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		
-		fire = Input.GetAxis ("Fire1");
+		fire = Input.GetAxis (fireType);
 
 		if (fireBuffer == 0)
 		{
@@ -36,7 +51,7 @@ public class ShootingMechanic : MonoBehaviour {
 
 				bulletRigid.AddForce (objectpos.transform.forward * bulletSpeed);
 
-				Destroy (bulletclone, 5f); //Destroys Warning Clone
+				Destroy (bulletclone, 1f); //Destroys Warning Clone
 
 				Invoke ("FireBuffer",fireRate);
 			}

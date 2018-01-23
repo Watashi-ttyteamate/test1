@@ -8,66 +8,75 @@ public class Move : MonoBehaviour {
 
 	private float thrust;
 	private float boost;
+	private float sideBoost;
 	private float pitch;
-	private float yaw;
 	private float roll;
 	[SerializeField]public static float capacity;
 	[SerializeField]public static float speedValue;
-	public static float startCapacity = 1000f;
+	public static float startCapacity = 500f;
 	private Vector3 speed;
-	[SerializeField]float YawSensitivity = 1;
+	private Vector3 speedSide;
 	[SerializeField]float RollSensitivity = 1;
 	[SerializeField]float PitchSensitivity = 1;
-//	[SerializeField]float StrafeSensitivity = 1;
 	[SerializeField]float ThrustMod;
 	[SerializeField]float boostMod;
 	public Text speedText;
 	public Text boostText;
 	public static Rigidbody rb;
-
+	public Material booster; 
+	public GameObject Player1Controller;
 
 	void Start () 
 	{
+		Controller controllerscript = Player1Controller.GetComponent<Controller> ();
+		Debug.Log ("Move Player 1 Controller Type " + controllerscript.Player1ControllerType);
+
 		rb = GetComponent<Rigidbody>();
 		capacity = startCapacity;
 		SetUIText ();
 	}
 
+
 	void FixedUpdate ()
 	{
-		
 		pitch = Input.GetAxis("Vertical");
 		roll = Input.GetAxis("Horizontal");
-		yaw = Input.GetAxis ("Strafe");
 		rb.AddRelativeTorque(pitch * PitchSensitivity, 0, -roll * RollSensitivity);
-		rb.AddRelativeForce (yaw * YawSensitivity, 0, 0);
 
 		boost = Input.GetAxis ("Boost");
-
-
 		thrust = Input.GetAxis ("Thrust");
+		sideBoost = Input.GetAxis ("Sideboost");
+
+		speedSide = transform.right * sideBoost * ThrustMod;
+		rb.AddForce (speedSide * 5f);
 		speed = transform.forward * thrust * ThrustMod;
-		rb.velocity = speed;
 
-		if (Input.GetAxis ("Boost") > 0 && capacity > 0) 
-		{
-			speed = speed * boostMod * Input.GetAxis("Boost");
-			capacity = capacity - (5 * Input.GetAxis ("Boost"));
-		}
 
-		if (capacity <= 1000) 
+		if (capacity <= 1000) 	
 		{
-			Debug.Log (capacity);
-			Debug.Log (rb.velocity);
 			capacity = capacity + 2;
 		}
 
+		if (boost > 0 && capacity > 0) 
+		{
+			speed = transform.forward * boost * boostMod;
+			capacity = capacity - (10 * boost);
+			booster.SetColor ("_EmissionColor", Color.red);
+		} 
+		else 
+		{	
+			booster.SetColor ("_EmissionColor", Color.black);
+		}
+
+		rb.AddForce (speed * 5f);
 	}
+		
 
 	void LateUpdate()
 	{
 		SetUIText ();
 	}
+
 
 	void SetUIText()
 	{
