@@ -634,9 +634,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 3ac40d2f-6272-46bb-a64d-7d12d0a32830
+  cloudProjectId: eaf806c5-a427-4eb0-802b-7a551ce2a3c6
   projectName: Quantum DogFight
-  organizationId: ryan28az
+  organizationId: unity_wd7088tqdxezyw
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
