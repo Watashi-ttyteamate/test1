@@ -18,7 +18,7 @@ public class Move : MonoBehaviour {
 	[SerializeField]float YawSensitivity = 1;
 	[SerializeField]float RollSensitivity = 1;
 	[SerializeField]float PitchSensitivity = 1;
-	[SerializeField]float StrafeSensitivity = 1;
+//	[SerializeField]float StrafeSensitivity = 1;
 	[SerializeField]float ThrustMod;
 	[SerializeField]float boostMod;
 	public Text speedText;
