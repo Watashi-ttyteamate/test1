@@ -28,7 +28,7 @@ public class Move : MonoBehaviour {
 	public Material booster; 
 
 
-	public int playerNum = 0;
+	public int playerNum;
 	Renderer shipRenderer;
 
 
@@ -42,8 +42,10 @@ public class Move : MonoBehaviour {
 
 	void Update()
 	{
-		
-		var inputDevice = (playerNum < InputManager.Devices.Count) ? InputManager.Devices[playerNum] : null;
+		Debug.Log ("2: " + InputManager.Devices[playerNum].ToString ());
+		Debug.Log (InputManager.Devices.Count);
+
+		var inputDevice = ( InputManager.Devices.Count + 2 > playerNum ) ? InputManager.Devices[playerNum] : 0;
 			if (inputDevice == null) 
 			{
 				// If no controller exists for this plane, just make it translucent.
