@@ -1,8 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
+
 
 public class ShootingMechanic : MonoBehaviour {
+
+
+
 
 	public Transform Player;
 	public Transform bulletPosition;
@@ -11,32 +16,21 @@ public class ShootingMechanic : MonoBehaviour {
 	private float bulletSpeed = 3000f;
 	private float fire;
 	private float fireBuffer = 0;
-	public float fireRate = 0.3f;
-	public GameObject Player1Controller;
+	[SerializeField]float fireRate = 0.3f;
 
-	private string fireType;
 
 	// Use this for initialization	
 	void Start () 
 	{
-		Controller controllerscript = Player1Controller.GetComponent<Controller> ();
-		Debug.Log ("ShootingMechanic Player 1 Controller Type " + controllerscript.Player1ControllerType);
-
-		if (controllerscript.Player1ControllerType == 0) 
-		{
-			fireType = "Fire";
-		} 
-		else if (controllerscript.Player1ControllerType == 1) 
-		{
-			fireType = "Fire1";
-		}
+		
 
 	}
-	
+
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		
-		fire = Input.GetAxis (fireType);
+		fire = InputManager.ActiveDevice.RightBumper;
 
 		if (fireBuffer == 0)
 		{

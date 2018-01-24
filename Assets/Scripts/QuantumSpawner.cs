@@ -48,7 +48,7 @@ public class QuantumSpawner : MonoBehaviour
 		{
 			if (currentWarning < 1) // makes all Warnings spawn 1 at a time
 			{
-				SpawnWarning (); //spawns Warning
+				SpawnWarning(); //spawns Warning
 				currentWarning++; //adds 1 to the Warning Counter (currentWarning)
 			}
 		}
@@ -72,7 +72,7 @@ public class QuantumSpawner : MonoBehaviour
 
 		astSpawn.Set (spawnLocX, spawnLocY, spawnLocZ); //assigns ASTEROID spawn position
 
-		Warning.localScale = new Vector3 (warningSize, warningSize, warningSize); // sets the size of the WARNING
+		Warning.localScale = new Vector3(warningSize, warningSize, warningSize); // sets the size of the WARNING
 		Asteroid.localScale = new Vector3 (astSize, astSize, astSize); //sets the size of the ASTEROID
 
 		GameObject clone = (GameObject)Instantiate (WarningField, astSpawn, astRotation); //Spawns Warning Clone
