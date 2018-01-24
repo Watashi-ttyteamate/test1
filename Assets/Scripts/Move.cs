@@ -26,11 +26,36 @@ public class Move : MonoBehaviour {
 	public Material booster; 
 	public GameObject Player1Controller;
 
+	private string verticalType;
+	private string horizontalType;
+	private string boostType;
+	private string thrustType;
+	private string sideboostType;
+
+
 	void Start () 
 	{
 		Controller controllerscript = Player1Controller.GetComponent<Controller> ();
 		Debug.Log ("Move Player 1 Controller Type " + controllerscript.Player1ControllerType);
+			
+		if (controllerscript.Player1ControllerType == 0) 
+		{
+			verticalType = "Vertical";
+			horizontalType = "Horizontal";
+			boostType = "Boost";
+			thrustType = "Thrust";
+			sideboostType = "Sideboost";
 
+		} 
+		else if (controllerscript.Player1ControllerType == 1) 
+		{
+			verticalType = "Vertical1";
+			horizontalType = "Horizontal1";	
+			boostType = "Boost1";
+			thrustType = "Thrust1";
+			sideboostType = "Sideboost1";
+		}
+			
 		rb = GetComponent<Rigidbody>();
 		capacity = startCapacity;
 		SetUIText ();
@@ -39,13 +64,13 @@ public class Move : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		pitch = Input.GetAxis("Vertical");
-		roll = Input.GetAxis("Horizontal");
+		pitch = Input.GetAxis(verticalType);
+		roll = Input.GetAxis(horizontalType);
 		rb.AddRelativeTorque(pitch * PitchSensitivity, 0, -roll * RollSensitivity);
 
-		boost = Input.GetAxis ("Boost");
-		thrust = Input.GetAxis ("Thrust");
-		sideBoost = Input.GetAxis ("Sideboost");
+		boost = Input.GetAxis (boostType);
+		thrust = Input.GetAxis (thrustType);
+		sideBoost = Input.GetAxis (sideboostType);
 
 		speedSide = transform.right * sideBoost * ThrustMod;
 		rb.AddForce (speedSide * 5f);

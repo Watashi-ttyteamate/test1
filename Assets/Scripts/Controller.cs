@@ -12,7 +12,7 @@ public class Controller : MonoBehaviour {
 	{
 		string[] names = Input.GetJoystickNames();
 
-		if(names[1].Length == 33)
+		if(names[0].Length == 33)
 		{
 			Debug.Log ("Player 1 is XBOX");
 			x = 1;
