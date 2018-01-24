@@ -17,7 +17,7 @@ public class Controller : MonoBehaviour {
 			Debug.Log ("Player 1 is XBOX");
 			x = 1;
 		}
-		else if(names[1].Length == 19)
+		else if(names[0].Length == 19)
 		{
 			Debug.Log("Player 1 is PS4");
 			x = 0;
