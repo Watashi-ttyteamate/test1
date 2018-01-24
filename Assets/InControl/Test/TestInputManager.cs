@@ -69,10 +69,6 @@ namespace InControl
 				CheckForPauseButton();
 			}
 
-			if (Input.GetKeyDown( KeyCode.R ))
-			{
-				Application.LoadLevel( "TestInputManager" );
-			}
 		}
 
 

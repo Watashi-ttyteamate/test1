@@ -1,91 +1,101 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using InControl;
 
 public class Move : MonoBehaviour {
 
 
 	private float thrust;
 	private float boost;
-	private float sideBoost;
+	private float strafe;
 	private float pitch;
 	private float roll;
-	[SerializeField]public static float capacity;
+	[SerializeField]public static float boostAmt;
 	[SerializeField]public static float speedValue;
-	public static float startCapacity = 500f;
+	public static float boostStart = 500f;
 	private Vector3 speed;
-	private Vector3 speedSide;
+	private Vector3 strafeSpeed;
 	[SerializeField]float RollSensitivity = 1;
 	[SerializeField]float PitchSensitivity = 1;
-	[SerializeField]float ThrustMod;
-	[SerializeField]float boostMod;
+	[SerializeField]float ThrustMod = 2;
+	[SerializeField]float boostMod = 2;
 	public Text speedText;
 	public Text boostText;
 	public static Rigidbody rb;
 	public Material booster; 
-	public GameObject Player1Controller;
 
-	private string verticalType;
-	private string horizontalType;
-	private string boostType;
-	private string thrustType;
-	private string sideboostType;
+
+	public int playerNum;
+	Renderer shipRenderer;
 
 
 	void Start () 
 	{
-		Controller controllerscript = Player1Controller.GetComponent<Controller> ();
-		Debug.Log ("Move Player 1 Controller Type " + controllerscript.Player1ControllerType);
-			
-		if (controllerscript.Player1ControllerType == 0) 
-		{
-			verticalType = "Vertical";
-			horizontalType = "Horizontal";
-			boostType = "Boost";
-			thrustType = "Thrust";
-			sideboostType = "Sideboost";
-
-		} 
-		else if (controllerscript.Player1ControllerType == 1) 
-		{
-			verticalType = "Vertical1";
-			horizontalType = "Horizontal1";	
-			boostType = "Boost1";
-			thrustType = "Thrust1";
-			sideboostType = "Sideboost1";
-		}
-			
+		shipRenderer = GetComponent<Renderer> ();
 		rb = GetComponent<Rigidbody>();
-		capacity = startCapacity;
+		boostAmt = boostStart;
 		SetUIText ();
 	}
 
+	void Update()
+	{
+		Debug.Log ("2: " + InputManager.Devices[playerNum].ToString ());
+		Debug.Log (InputManager.Devices.Count);
+
+		var inputDevice = ( InputManager.Devices.Count + 2 > playerNum ) ? InputManager.Devices[playerNum] : 0;
+			if (inputDevice == null) 
+			{
+				// If no controller exists for this plane, just make it translucent.
+				//shipRenderer.enabled = false;
+				Debug.Log ("fag");
+			} 
+			else 
+			{
+			 
+				
+				Debug.Log (inputDevice);
+
+				//UpdateShipWithInputDevice(inputDevice);
+			
+			}
+			
+	}
+	
 
 	void FixedUpdate ()
 	{
-		pitch = Input.GetAxis(verticalType);
-		roll = Input.GetAxis(horizontalType);
-		rb.AddRelativeTorque(pitch * PitchSensitivity, 0, -roll * RollSensitivity);
 
-		boost = Input.GetAxis (boostType);
-		thrust = Input.GetAxis (thrustType);
-		sideBoost = Input.GetAxis (sideboostType);
+		pitch = InputManager.ActiveDevice.LeftStickY;
+		//pitch = Input.GetAxis(verticalType);
+		roll = InputManager.ActiveDevice.LeftStickX;
+		//roll = Input.GetAxis(horizontalType);
+		rb.AddRelativeTorque(pitch * PitchSensitivity, 0, roll * RollSensitivity);
 
-		speedSide = transform.right * sideBoost * ThrustMod;
-		rb.AddForce (speedSide * 5f);
+		//boost = Input.GetAxis (boostType);
+		boost = InputManager.ActiveDevice.RightStickButton;
+		//thrust = Input.GetAxis (thrustType);
+		thrust = InputManager.ActiveDevice.RightTrigger;
+		//strafe = Input.GetAxis (sideboostType);
+		strafe = InputManager.ActiveDevice.RightStickY;
+
+		strafeSpeed = transform.right * strafe * ThrustMod;
+
+		rb.AddForce (strafeSpeed * 5f);
 		speed = transform.forward * thrust * ThrustMod;
 
 
-		if (capacity <= 1000) 	
+		if (boostAmt <= 1000) 	
 		{
-			capacity = capacity + 2;
+			boostAmt = boostAmt + 2;
 		}
 
-		if (boost > 0 && capacity > 0) 
+		if (boost > 0 && boostAmt > 0) 
 		{
 			speed = transform.forward * boost * boostMod;
-			capacity = capacity - (10 * boost);
+			boostAmt = boostAmt - (10 * boost);
 			booster.SetColor ("_EmissionColor", Color.red);
 		} 
 		else 
@@ -102,12 +112,43 @@ public class Move : MonoBehaviour {
 		SetUIText ();
 	}
 
+	void UpdateShipWithInputDevice( InputDevice inputDevice )
+	{
+		// Perform action as per buttons pressed.
+		if (inputDevice.Action1)
+		{
+			//cubeRenderer.material.color = Color.green;
+			Debug.Log("A / X");
+		}
+		else if (inputDevice.Action2)
+		{
+			//cubeRenderer.material.color = Color.red;
+			Debug.Log("B / O");
+		}
+		else if (inputDevice.Action3)
+		{
+			//cubeRenderer.material.color = Color.blue;
+		}
+		else if (inputDevice.Action4)
+		{
+			//cubeRenderer.material.color = Color.yellow;
+		}
+		else
+		{
+			//cubeRenderer.material.color = Color.white;
+		}
+
+		transform.Rotate( Vector3.down, 500f * Time.deltaTime * inputDevice.Direction.X, Space.World );
+		transform.Rotate( Vector3.right, 500f * Time.deltaTime * inputDevice.Direction.Y, Space.World );
+		transform.Rotate( Vector3.down, 500f * Time.deltaTime * inputDevice.RightStickX, Space.World );
+		transform.Rotate( Vector3.right, 500f * Time.deltaTime * inputDevice.RightStickY, Space.World );
+	}
 
 	void SetUIText()
 	{
 		speedValue = Mathf.Pow(Mathf.Pow(rb.velocity.x,2F) + Mathf.Pow(rb.velocity.y,2F) + Mathf.Pow(rb.velocity.z,2F),.5F);
 		speedText.text = "Speed: " + speedValue.ToString();
-		boostText.text = "Boost: " + capacity.ToString();
+		boostText.text = "Boost: " + boostAmt.ToString();
 	}
 
 
